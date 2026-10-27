@@ -34,10 +34,12 @@ export function AddRepoModal({ isOpen, onClose, onSuccess }: AddRepoModalProps) 
         try {
             const savedToken = localStorage.getItem("codeintel_github_token");
             if (savedToken) {
-                setTokenInput(savedToken);
+                queueMicrotask(() => {
+                    setTokenInput(savedToken);
+                });
             }
-        } catch (e) {
-            //
+        } catch {
+            // ignore
         }
     }, []);
 
@@ -76,15 +78,15 @@ export function AddRepoModal({ isOpen, onClose, onSuccess }: AddRepoModalProps) 
             if (activeToken) {
                 try {
                     localStorage.setItem("codeintel_github_token", activeToken);
-                } catch (e) {
-                    //
+                } catch {
+                    // ignore
                 }
             }
 
             onSuccess(result);
             onClose();
-        } catch (err: any) {
-            const msg = err.message || "Failed to analyze repository.";
+        } catch (err: unknown) {
+            const msg = (err instanceof Error ? err.message : String(err)) || "Failed to analyze repository.";
 
             // Auto-detect private repo or missing access error
             if (msg.includes("NOT_FOUND_OR_PRIVATE") || msg.includes("PRIVATE_REPO_DETECTED") || msg.includes("ACCESS_DENIED")) {
@@ -97,7 +99,7 @@ export function AddRepoModal({ isOpen, onClose, onSuccess }: AddRepoModalProps) 
                 try {
                     localStorage.removeItem("codeintel_github_token");
                     setTokenInput("");
-                } catch (e) {}
+                } catch {}
             } else {
                 setErrorMessage(msg);
             }
@@ -142,7 +144,7 @@ export function AddRepoModal({ isOpen, onClose, onSuccess }: AddRepoModalProps) 
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2"
                         >
-                            <span>Generate GitHub Token with 'repo' scope</span>
+                            <span>Generate GitHub Token with &apos;repo&apos; scope</span>
                             <ExternalLink className="w-3 h-3" />
                         </a>
                     </div>
@@ -230,7 +232,7 @@ export function AddRepoModal({ isOpen, onClose, onSuccess }: AddRepoModalProps) 
                                                 setTokenInput("");
                                                 try {
                                                     localStorage.removeItem("codeintel_github_token");
-                                                } catch (e) {}
+                                                } catch {}
                                             }}
                                             className="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-300 text-xs border border-slate-700"
                                         >

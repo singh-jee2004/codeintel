@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 CodeIntel — AI-Powered Codebase Intelligence Platform
 
-## Getting Started
+> Connect any GitHub repository for instant AI-powered security audits, architecture visualization, dependency analysis, and codebase intelligence.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+---
+
+## ✨ Features
+
+- **🔗 Live GitHub Integration** — Analyze any public or private GitHub repository (with PAT)
+- **📊 Health Score Dashboard** — Composite health scoring across 7 dimensions
+- **🗺️ Architecture Visualization** — Interactive React Flow graph of inferred system topology
+- **🛡️ Security & Secrets Audit** — Detect committed secrets, vulnerable dependencies, and CVEs
+- **📦 Dependency Intelligence** — Real dependency scanning from `package.json` with vulnerability cross-referencing
+- **🏗️ Technical Debt Analysis** — Identify monolithic modules, complexity hotspots, and missing tests
+- **🤖 AI Repository Copilot** — Context-aware RAG-style assistant with source citations
+- **📝 PR Risk Review** — AI-generated pull request risk assessment with file-level scoring
+- **📖 Auto Documentation** — Generated README, API specs, architecture docs, and setup guides
+- **🔍 Symbol Search** — AST-indexed function and class search across the codebase
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** ≥ 18.17
+- **npm** ≥ 9
+
+### Installation
+
+```bash
+git clone https://github.com/your-username/codeintel.git
+cd codeintel
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to launch the dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🔐 Private Repository Support
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+CodeIntel supports private repositories via GitHub Personal Access Tokens:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Generate a token at [github.com/settings/tokens](https://github.com/settings/tokens/new?scopes=repo&description=CodeIntel)
+2. Grant the `repo` scope
+3. Paste the token in the "Add Repository" modal
 
-## Deploy on Vercel
+> **Note:** Tokens are stored locally in your browser's `localStorage` and are never sent to any external server.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Project Structure
+
+```
+codeintel/
+├── app/
+│   ├── layout.tsx          # Root layout with SEO metadata
+│   ├── page.tsx            # Main dashboard (client component)
+│   ├── globals.css         # Design tokens & scrollbar styles
+│   ├── error.tsx           # Global error boundary
+│   ├── not-found.tsx       # Custom 404 page
+│   └── loading.tsx         # App loading state
+├── components/
+│   ├── Sidebar.tsx         # Navigation sidebar
+│   ├── Header.tsx          # Top bar with repo selector
+│   ├── AddRepoModal.tsx    # Repository connection modal
+│   ├── OverviewView.tsx    # Health score dashboard
+│   ├── ArchitectureView.tsx # React Flow topology graph
+│   ├── SecurityView.tsx    # Security findings explorer
+│   ├── QualityView.tsx     # Technical debt cards
+│   ├── DependenciesView.tsx # Dependency table
+│   ├── AiAssistantView.tsx # AI chat assistant
+│   ├── PullRequestsView.tsx # PR risk analysis
+│   └── DocsAndSearchView.tsx # Docs generator & symbol search
+├── lib/
+│   ├── githubAnalyzer.ts   # GitHub API integration & analysis engine
+│   └── utils.ts            # Shared utilities (cn, formatNumber, etc.)
+├── types/
+│   └── codeintel.ts        # TypeScript interfaces & schemas
+├── next.config.ts          # Production config with security headers
+├── .env.example            # Environment variable template
+└── package.json
+```
+
+---
+
+## 🛡️ Security
+
+- **Security headers** configured: HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- **No server-side token storage** — GitHub PATs are stored client-side only
+- **`poweredByHeader: false`** — Server technology fingerprint removed
+- **Standalone output** — Optimized for containerized deployments
+
+---
+
+## 🚢 Deployment
+
+### Vercel (Recommended)
+
+```bash
+npx vercel
+```
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:18-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+EXPOSE 3000
+CMD ["node", "server.js"]
+```
+
+---
+
+## 📄 License
+
+MIT © CodeIntel
